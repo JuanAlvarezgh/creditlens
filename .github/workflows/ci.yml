@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install linters
+        run: pip install black==24.1.1 ruff==0.2.0 isort==5.13.2
+      - name: black
+        run: black --check .
+      - name: ruff
+        run: ruff check .
+      - name: isort
+        run: isort --check-only .
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          # Airflow pins email-validator<2 but Pydantic 2.6 requires >=2.
+          # Force-upgrade after install to resolve the conflict at runtime.
+          pip install -U "email-validator>=2.0"
+      - name: Run tests
+        run: pytest tests/test_consumer.py tests/test_features.py tests/test_api.py -v
+        env:
+          POSTGRES_HOST: localhost
+          POSTGRES_PORT: "5432"
+          POSTGRES_DB: creditlens
+          POSTGRES_USER: creditlens
+          POSTGRES_PASSWORD: creditlens_pass
+          KAFKA_BOOTSTRAP_SERVERS: localhost:9092
+          MLFLOW_TRACKING_URI: http://localhost:5000
+          MLFLOW_MODEL_NAME: credit_risk_model

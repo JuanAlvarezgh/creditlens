@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: mart_credit_features
+    description: "Feature-engineered dataset ready for ML training"
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: label
+        tests:
+          - accepted_values:
+              values: [0, 1]
+      - name: total_late_payments
+        tests: [not_null]

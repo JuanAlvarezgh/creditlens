@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: creditlens
+    database: creditlens
+    schema: public
+    tables:
+      - name: raw_credit_applications
+        description: "Raw credit applications ingested from Kafka"
+        columns:
+          - name: id
+            tests: [unique, not_null]
+          - name: age
+            tests: [not_null]
+          - name: serious_dlqin2yrs
+            tests:
+              - accepted_values:
+                  values: [0, 1]

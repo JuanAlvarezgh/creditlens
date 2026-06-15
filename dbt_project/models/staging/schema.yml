@@ -1,0 +1,14 @@
+version: 2
+
+models:
+  - name: stg_credit_applications
+    description: "Cleaned and validated credit applications"
+    columns:
+      - name: id
+        tests: [unique, not_null]
+      - name: serious_dlqin2yrs
+        tests:
+          - accepted_values:
+              values: [0, 1]
+      - name: revolving_utilization
+        tests: [not_null]

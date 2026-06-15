@@ -1,0 +1,12 @@
+creditlens:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: "{{ env_var('POSTGRES_HOST', 'localhost') }}"
+      port: "{{ env_var('POSTGRES_PORT', '5433') | int }}"
+      user: "{{ env_var('POSTGRES_USER', 'creditlens') }}"
+      password: "{{ env_var('POSTGRES_PASSWORD', 'creditlens_pass') }}"
+      dbname: "{{ env_var('POSTGRES_DB', 'creditlens') }}"
+      schema: public
+      threads: 4
